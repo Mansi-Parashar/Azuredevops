@@ -1,0 +1,9 @@
+{
+	"name": "POCRDTraining",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "955cec5f-f90b-43a1-9909-9b72398ca52e",
+		"tenantId": "45f95e3a-b725-490d-83f1-a8c18a487a7a"
+	}
+}

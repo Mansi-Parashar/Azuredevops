@@ -1,0 +1,19 @@
+{
+	"name": "SalesXML",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS_POC_RD",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "SalesData_005108_00935_23062023-111138_1.xml",
+				"fileSystem": "xml"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

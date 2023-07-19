@@ -1,0 +1,6 @@
+{
+	"name": "IRSH-Demo",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

@@ -1,0 +1,68 @@
+{
+	"name": "SalesXML",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SalesXML",
+						"type": "DatasetReference"
+					},
+					"name": "SalesRead"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesData as ({@BatchID} as integer, POSBasket as ({@FranchisePartnerId} as short, BasketType as string, Header as (BasketCountryID as string, BasketCurrencyID as string, BasketLanguageID as string, DateTimeCreated as string, OriginatedBy as (DeviceID as string, RegisterID as short, StoreID as short, TransactionNumber as short)), ID as string, ProductSale as (ClassNo as short, Description as string, LineNumber as short, LineVoided as boolean, NetValue as double, ProductID as integer, Quantity as double, SellingCode as string, TaxAmount as double, UnitPrice as double)[])[])",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     validationMode: 'none',",
+				"     namespaces: true) ~> SalesRead",
+				"SalesRead foldDown(unrollMultiple(SalesData.POSBasket,SalesData.POSBasket.ProductSale),",
+				"     mapColumn(",
+				"          {@BatchID} = SalesData.{@BatchID},",
+				"          {@FranchisePartnerId} = SalesData.POSBasket.{@FranchisePartnerId},",
+				"          BasketType = SalesData.POSBasket.BasketType,",
+				"          ID = SalesData.POSBasket.ID,",
+				"          ClassNo = SalesData.POSBasket.ProductSale.ClassNo,",
+				"          Description = SalesData.POSBasket.ProductSale.Description,",
+				"          LineNumber = SalesData.POSBasket.ProductSale.LineNumber,",
+				"          LineVoided = SalesData.POSBasket.ProductSale.LineVoided,",
+				"          NetValue = SalesData.POSBasket.ProductSale.NetValue,",
+				"          ProductID = SalesData.POSBasket.ProductSale.ProductID,",
+				"          Quantity = SalesData.POSBasket.ProductSale.Quantity,",
+				"          SellingCode = SalesData.POSBasket.ProductSale.SellingCode,",
+				"          TaxAmount = SalesData.POSBasket.ProductSale.TaxAmount,",
+				"          UnitPrice = SalesData.POSBasket.ProductSale.UnitPrice",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

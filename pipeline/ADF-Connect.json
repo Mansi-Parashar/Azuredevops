@@ -1,0 +1,118 @@
+{
+	"name": "ADF-Connect",
+	"properties": {
+		"activities": [
+			{
+				"name": "ParijatDB-Testing",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParijatLiveData",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Task Sucessfull",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "ParijatDB-Testing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://adf-testing.azurewebsites.net:443/api/Email_test/triggers/When_a_HTTP_request_is_received/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=6k9F0fhYDgVw-pTxvLu9aDF4mpmottM5rgUK52FqnqY",
+					"method": "POST",
+					"body": {
+						"value": "{\n    \"To\": \"mayuresh.banneteamcomputers.com\",\n    \"Subject\": \"Task failed\",\n    \"Messege\": \"Task Sucessfully failed\",\n    \"DataFactoryName\": \"@{pipeline().DataFactory}\",\n    \"PipelineName\": \"@{pipeline().Pipeline}\",\n    \"Time\": \"@{pipeline().TriggerTime}\",\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Task Failed",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "ParijatDB-Testing",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://adf-testing.azurewebsites.net:443/api/Email_test_Failed/triggers/When_a_HTTP_request_is_received/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=uC6SnmNVinDhbPZNcidJWgpW1EDl68zPujfqZpYNRnM",
+					"method": "POST",
+					"body": {
+						"value": "{\n    \"To\": \"mayuresh.banneteamcomputers.com\",\n    \"Subject\": \"Task failed\",\n    \"Messege\": \"Task failed\",\n    \"DataFactoryName\": \"@{pipeline().DataFactory}\",\n    \"PipelineName\": \"@{pipeline().Pipeline}\",\n    \"Time\": \"@{pipeline().TriggerTime}\",\n    \"Report\": \"@{activity('ParijatDB-Testing').Error.Message}\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-07-18T10:26:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

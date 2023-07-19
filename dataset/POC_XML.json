@@ -1,0 +1,19 @@
+{
+	"name": "POC_XML",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS_POC_RD",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Inventory.xml",
+				"fileSystem": "xml"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

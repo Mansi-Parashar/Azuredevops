@@ -1,0 +1,50 @@
+{
+	"name": "XMtoCSV",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "POC_XML",
+						"type": "DatasetReference"
+					},
+					"name": "XMLADLS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "XMLTOCSV",
+						"type": "DatasetReference"
+					},
+					"name": "CSVADLSXML",
+					"description": "XML data to csv"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     fileList: true,",
+				"     validationMode: 'xsd',",
+				"     namespaces: true) ~> XMLADLS",
+				"XMLADLS foldDown(unroll(),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CSVADLSXML"
+			]
+		}
+	}
+}

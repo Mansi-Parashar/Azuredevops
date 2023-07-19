@@ -1,0 +1,16 @@
+{
+	"name": "AzurePostgreSql2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzurePostgreSql",
+		"typeProperties": {
+			"connectionString": "host=kockpitpg.postgres.database.azure.com;port=5432;database=parijatdb;uid=postgres;encryptionmethod=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhZDBkY2U3Ny0zNmJkLTQ4NWQtOTNjNS05YTkyNTdmNDRmYWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IRSH-Demo",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
